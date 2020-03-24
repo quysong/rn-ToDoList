@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
   Image,
   Alert
 } from 'react-native';
-
+import axios from 'axios';
 
 const styles = StyleSheet.create({
   container: {
@@ -61,12 +61,32 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLogin = () => {
+    let userInfo = { email, password };
+    console.log('userInfo', userInfo);
+    axios.post('https://api.monitor.bclocal.top/api/login', {
+      ...userInfo
+    }, {
+      headers: { "Content-Type": "application/json" }
+    })
+      .then(function (response) {
+        // handle success
+        console.log('response===', response.data);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log('error====')
+        console.log(error);
+      })
+  }
+
   const onClickListener = (viewId) => {
     // Alert.alert("Alert", "Button pressed " + viewId);
     switch (viewId) {
       case 'login':
         // check account
-        navigation.push('Home')
+        handleLogin();
+        // navigation.push('Home')
         break;
       case 'restore_password':
         break;
@@ -76,6 +96,10 @@ const Login = ({ navigation }) => {
         break;
     }
   }
+
+  useEffect(() => {
+    console.log(1234)
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -113,68 +137,3 @@ const Login = ({ navigation }) => {
 };
 
 export default Login;
-
-// class Login extends Component {
-
-//   constructor(props) {
-//     super(props);
-//     state = {
-//       email   : '',
-//       password: '',
-//     }
-//   }
-
-//   onClickListener = (viewId) => {
-//     Alert.alert("Alert", "Button pressed "+viewId);
-//     switch(viewId){
-//       case 'login':
-//         // check account
-
-//         break;
-//       case 'restore_password':
-//         break;
-//       case 'register':
-//         break;
-//       default:
-//         break;
-//     }
-//   }
-
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//         <View style={styles.inputContainer}>
-//           <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/message/ultraviolet/50/3498db'}}/>
-//           <TextInput style={styles.inputs}
-//               placeholder="Email"
-//               keyboardType="email-address"
-//               underlineColorAndroid='transparent'
-//               onChangeText={(email) => this.setState({email})}/>
-//         </View>
-
-//         <View style={styles.inputContainer}>
-//           <Image style={styles.inputIcon} source={{uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db'}}/>
-//           <TextInput style={styles.inputs}
-//               placeholder="Password"
-//               secureTextEntry={true}
-//               underlineColorAndroid='transparent'
-//               onChangeText={(password) => this.setState({password})}/>
-//         </View>
-
-//         <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={() => this.onClickListener('login')}>
-//           <Text style={styles.loginText}>Login</Text>
-//         </TouchableHighlight>
-
-//         <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('restore_password')}>
-//             <Text>Forgot your password?</Text>
-//         </TouchableHighlight>
-
-//         <TouchableHighlight style={styles.buttonContainer} onPress={() => this.onClickListener('register')}>
-//             <Text>Register</Text>
-//         </TouchableHighlight>
-//       </View>
-//     );
-//   }
-// }
-
-// export default Login;
